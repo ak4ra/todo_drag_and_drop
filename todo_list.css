@@ -1,0 +1,40 @@
+#todo-list {
+	margin-left: auto;
+	margin-right: auto;
+	width: 80vw;
+}
+
+.todo-list_item {
+	user-select: none;
+	color: white;
+	background-color: lightcoral;
+	margin: 0.5rem auto;
+	padding: 0.5rem 0.5rem 0.5rem 1rem;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* .todo-list_item h1 {
+	margin: 0.5rem 1rem 0.5rem 1rem;
+} */
+
+.todo-list_item_text {
+	margin: 0.5rem 1rem 0.5rem 1rem;
+}
+
+.todo-list_item_delete-button {
+	margin: 0;
+	background-color: white;
+	color: lightcoral;
+	padding: 1rem 1.5rem;
+}
+
+.todo-list_item_delete-button:hover {
+	background-color: darkmagenta;
+	color: white;
+}
+
+.todo-list_item_delete-button h1 {
+	margin: 0;
+}
