@@ -1,7 +1,27 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Courier New', Courier, monospace;
+}
+
 #todo-list {
 	margin-left: auto;
 	margin-right: auto;
 	width: 80vw;
+	max-width: 1200px;
+}
+
+#todo-list_input {
+	font-family: 'Courier New', Courier, monospace;
+	color: deepskyblue;
+	border-color: deepskyblue;
+	font-size: xx-large;
+	padding: 0.7rem;
+	border-width: 4px;
+	outline: none;
+	width: 100%;
 }
 
 .todo-list_item {
@@ -11,13 +31,9 @@
 	margin: 0.5rem auto;
 	padding: 0.5rem 0.5rem 0.5rem 1rem;
 	display: flex;
-    justify-content: space-between;
-    align-items: center;
+	justify-content: space-between;
+	align-items: center;
 }
-
-/* .todo-list_item h1 {
-	margin: 0.5rem 1rem 0.5rem 1rem;
-} */
 
 .todo-list_item_text {
 	margin: 0.5rem 1rem 0.5rem 1rem;

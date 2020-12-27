@@ -17,11 +17,18 @@ function createListItem(item) {
 	listItemText.appendChild(listItemTextNode);
 	listItem.appendChild(listItemText);
 
+	// drag and drop
+	// listItem.setAttribute("draggable", "true");
+	// listItem.addEventListener("drop", () => console.log("drop"));
+	// listItem.addEventListener("dragstart", () => console.log("dragstart"));
+	// listItem.addEventListener("drag", () => console.log("drag"));
+	// listItem.addEventListener("dragend", () => console.log("dragend"));
+
 	// create the delete button and append it to the list item
 	const deleteButton = document.createElement("div");
 	deleteButton.classList.add("todo-list_item_delete-button");
 	const deleteButtonText = document.createElement("h1");
-	const deleteTextNode = document.createTextNode("X");
+	const deleteTextNode = document.createTextNode("x");
 	deleteButtonText.appendChild(deleteTextNode);
 	deleteButton.addEventListener("click", () => listItem.remove());
 	deleteButton.appendChild(deleteButtonText);
