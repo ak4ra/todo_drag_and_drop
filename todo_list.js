@@ -1,14 +1,16 @@
 const todoList = document.querySelector("#todo-list");
 const listInput = document.querySelector("#todo-list_input");
 
-listInput.addEventListener("keydown", event => {
+listInput.addEventListener("keydown", (event) => {
 	if (event.keyCode !== 13) {
 		return;
 	}
 	const newItemText = event.target.value.trim();
 	event.target.value = "";
-	createListItem(newItemText);
-})
+	if (Boolean(newItemText)) {
+		createListItem(newItemText);
+	}
+});
 
 const todoListItems = [
 	"placeholder list item text 1",
