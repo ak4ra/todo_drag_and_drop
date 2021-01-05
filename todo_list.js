@@ -1,13 +1,11 @@
-const todoListItems = [
-	"placeholder list item text 1",
-	"placeholder list item text 2",
-	"placeholder list item text 3",
-	"placeholder list item text 4",
-];
-
+const storage = window.localStorage;
+const TODO_LIST_ITEMS = "todoListItems";
 
 const todoList = document.querySelector("#todo-list");
 const listInput = document.querySelector("#todo-list_input");
+
+const todoListItems = getTodoList() || [];
+saveTodoList();
 
 // create new list item when "Enter" is pressed
 listInput.addEventListener("keydown", (event) => {
@@ -20,11 +18,12 @@ listInput.addEventListener("keydown", (event) => {
 		return;
 	}
 	// do not allow duplicate items
-	if (todoListItems.findIndex(td => td === newItemText) > -1) {
+	if (todoListItems.findIndex((td) => td === newItemText) > -1) {
 		return;
 	}
 	todoListItems.push(newItemText);
 	createListItem(newItemText, todoListItems.length - 1);
+	saveTodoList();
 });
 // drag & drop variables
 let draggingElement;
@@ -106,12 +105,14 @@ function mouseMoveHandler(event) {
 
 		swapNodes(previousElement, draggingElement);
 		swapNodes(draggingElementPlaceholder, previousElement);
+		swapItemsInList(previousElement, draggingElement);
 	}
 
 	// moving down
 	if (nextElement && isAbove(nextElement, draggingElement)) {
 		swapNodes(nextElement, draggingElementPlaceholder);
 		swapNodes(nextElement, draggingElement);
+		swapItemsInList(draggingElement, nextElement);
 	}
 }
 
@@ -136,7 +137,7 @@ function mouseUpHandler(event) {
 	document.removeEventListener("mouseup", mouseUpHandler);
 
 	// TODO list again in storage (if applicable) with the new order;
-	// console.log(todoListItems);
+	console.log(todoListItems);
 }
 
 function isAbove(nodeA, nodeB) {
@@ -146,8 +147,6 @@ function isAbove(nodeA, nodeB) {
 }
 
 function swapNodes(nodeA, nodeB) {
-	// console.log("nodeA: ", nodeA);
-	// console.log("nodeB: ", nodeB.querySelector(".todo-list_item_text").textContent);
 	const parentA = nodeA.parentNode;
 	const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
 
@@ -156,6 +155,34 @@ function swapNodes(nodeA, nodeB) {
 
 	// move nodeB before the sibling of nodeA
 	parentA.insertBefore(nodeB, siblingA);
+}
+
+function swapItemsInList(nodeA, nodeB) {
+	const textA = nodeA.querySelector("h1") ? nodeA.querySelector("h1").textContent : "";
+	const textB = nodeB.querySelector("h1") ? nodeB.querySelector("h1").textContent : "";
+
+	if (!textA || !textB) {
+		return;
+	}
+	const indexA = todoListItems.findIndex((td) => td === textA);
+	const indexB = todoListItems.findIndex((td) => td === textB);
+	if (indexA === -1 || indexB === -1) {
+		return;
+	}
+	if (indexA !== indexB - 1) {
+		return;
+	}
+	todoListItems.splice(indexA, 1, textB);
+	todoListItems.splice(indexB, 1, textA);
+	saveTodoList();
+}
+
+function getTodoList() {
+	return JSON.parse(storage.getItem(TODO_LIST_ITEMS));
+}
+
+function saveTodoList() {
+	storage.setItem(TODO_LIST_ITEMS, JSON.stringify(todoListItems));
 }
 
 function createAllListItems() {
