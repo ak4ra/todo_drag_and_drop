@@ -50,7 +50,7 @@ function createListItem(item, i) {
 	const deleteButton = document.createElement("div");
 	deleteButton.classList.add("todo-list_item_delete-button");
 	const deleteButtonText = document.createElement("h1");
-	const deleteTextNode = document.createTextNode("x");
+	const deleteTextNode = document.createTextNode("\u2A2F");
 	deleteButtonText.appendChild(deleteTextNode);
 	deleteButton.addEventListener("click", () => deleteListItem(listItem, item));
 	deleteButton.appendChild(deleteButtonText);
@@ -80,6 +80,8 @@ function mouseDownHandler(event) {
 		if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
 		draggingElement = draggingElement.parentNode;
 	}
+
+	draggingElement.classList.add("todo-list_item--dragging");
 
 	// calculate mouse position
 	const elementDistanceFromPageTop = draggingElement.getBoundingClientRect().top + window.scrollY;
@@ -141,6 +143,7 @@ function mouseUpHandler(event) {
 	// remove position styles for dragging element
 	draggingElement.style.removeProperty("position");
 	draggingElement.style.removeProperty("top");
+	draggingElement.classList.remove("todo-list_item--dragging");
 
 	// clear drag & drop variables
 	mouseY = null;

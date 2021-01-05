@@ -45,6 +45,11 @@ body {
 	max-width: 1200px;
 }
 
+.todo-list_item--dragging {
+	background-color: rgb(238, 219, 109);
+	/* background-color: crimson; */
+}
+
 .todo-list_item_text {
 	margin: 0.5rem 1rem 0.5rem 1rem;
 }
