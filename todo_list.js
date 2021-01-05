@@ -25,13 +25,12 @@ listInput.addEventListener("keydown", (event) => {
 	createListItem(newItemText, todoListItems.length - 1);
 	saveTodoList();
 });
+
 // drag & drop variables
 let draggingElement;
 let draggingElementPlaceholder;
 let draggingInProgress = false;
 let mouseY = null;
-
-// let previouslyDraggedOverItem;
 
 function createListItem(item, i) {
 	// create the list item container and h1 containing the todo text
@@ -53,7 +52,7 @@ function createListItem(item, i) {
 	const deleteButtonText = document.createElement("h1");
 	const deleteTextNode = document.createTextNode("x");
 	deleteButtonText.appendChild(deleteTextNode);
-	deleteButton.addEventListener("click", () => listItem.remove());
+	deleteButton.addEventListener("click", () => deleteListItem(listItem, item));
 	deleteButton.appendChild(deleteButtonText);
 	listItem.appendChild(deleteButton);
 
@@ -61,9 +60,24 @@ function createListItem(item, i) {
 	todoList.appendChild(listItem);
 }
 
+function deleteListItem(listItem, listItemText) {
+	const index = todoListItems.findIndex((td) => td === listItemText);
+	if (index === -1) {
+		return;
+	}
+	listItem.remove();
+	todoListItems.splice(index, 1);
+	saveTodoList();
+}
+
 function mouseDownHandler(event) {
+
 	draggingElement = event.target;
+	// return if the event comes from the delete button
+	if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
 	while (!draggingElement.classList.contains("todo-list_item")) {
+		// return if the event comes from the delete button
+		if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
 		draggingElement = draggingElement.parentNode;
 	}
 
@@ -135,9 +149,6 @@ function mouseUpHandler(event) {
 	// remove mousemove and mouseup listeners
 	document.removeEventListener("mousemove", mouseMoveHandler);
 	document.removeEventListener("mouseup", mouseUpHandler);
-
-	// TODO list again in storage (if applicable) with the new order;
-	console.log(todoListItems);
 }
 
 function isAbove(nodeA, nodeB) {
