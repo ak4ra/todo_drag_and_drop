@@ -69,9 +69,8 @@ function mouseDownHandler(event) {
 	}
 
 	// calculate mouse position
-	const rect = draggingElement.getBoundingClientRect();
-	mouseY = event.pageY - rect.top;
-	console.log("pageY: " + event.pageY);
+	const elementDistanceFromPageTop = draggingElement.getBoundingClientRect().top + window.scrollY;
+	mouseY = event.pageY - elementDistanceFromPageTop;
 
 	// attach listeners to the document
 	document.addEventListener("mousemove", mouseMoveHandler);
@@ -96,9 +95,6 @@ function mouseMoveHandler(event) {
 
 	// set position styles for dragging element
 	draggingElement.style.position = "absolute";
-	// console.log("pageY: " + event.pageY);
-	// console.log("mouseY: " + mouseY);
-	// console.log("draggingElement.style.top: " + `${event.pageY - mouseY}px`);
 	draggingElement.style.top = `${event.pageY - mouseY}px`;
 
 	// moving up
