@@ -1,3 +1,11 @@
+const todoListItems = [
+	"placeholder list item text 1",
+	"placeholder list item text 2",
+	"placeholder list item text 3",
+	"placeholder list item text 4",
+];
+
+
 const todoList = document.querySelector("#todo-list");
 const listInput = document.querySelector("#todo-list_input");
 
@@ -8,18 +16,16 @@ listInput.addEventListener("keydown", (event) => {
 	}
 	const newItemText = event.target.value.trim();
 	event.target.value = "";
-	if (Boolean(newItemText)) {
-		createListItem(newItemText);
+	if (!Boolean(newItemText)) {
+		return;
 	}
+	// do not allow duplicate items
+	if (todoListItems.findIndex(td => td === newItemText) > -1) {
+		return;
+	}
+	todoListItems.push(newItemText);
+	createListItem(newItemText, todoListItems.length - 1);
 });
-
-const todoListItems = [
-	"placeholder list item text 1",
-	"placeholder list item text 2",
-	"placeholder list item text 3",
-	"placeholder list item text 4",
-];
-
 // drag & drop variables
 let draggingElement;
 let draggingElementPlaceholder;
@@ -29,9 +35,10 @@ let mouseY = null;
 
 // let previouslyDraggedOverItem;
 
-function createListItem(item) {
+function createListItem(item, i) {
 	// create the list item container and h1 containing the todo text
 	const listItem = document.createElement("div");
+	listItem.id = `item_${i}`;
 	listItem.classList.add("todo-list_item");
 	const listItemText = document.createElement("h1");
 	listItemText.classList.add("todo-list_item_text");
@@ -155,9 +162,7 @@ function swapNodes(nodeA, nodeB) {
 }
 
 function createAllListItems() {
-	for (const item of todoListItems) {
-		createListItem(item);
-	}
+	todoListItems.forEach((item, i) => createListItem(item, i));
 }
 
 createAllListItems();
