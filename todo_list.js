@@ -30,7 +30,6 @@ listInput.addEventListener("keydown", (event) => {
 let draggingElement;
 let draggingElementPlaceholder;
 let draggingInProgress = false;
-let mouseX = null;
 let mouseY = null;
 
 // let previouslyDraggedOverItem;
@@ -71,8 +70,8 @@ function mouseDownHandler(event) {
 
 	// calculate mouse position
 	const rect = draggingElement.getBoundingClientRect();
-	mouseX = event.pageX - rect.left;
 	mouseY = event.pageY - rect.top;
+	console.log("pageY: " + event.pageY);
 
 	// attach listeners to the document
 	document.addEventListener("mousemove", mouseMoveHandler);
@@ -97,6 +96,9 @@ function mouseMoveHandler(event) {
 
 	// set position styles for dragging element
 	draggingElement.style.position = "absolute";
+	// console.log("pageY: " + event.pageY);
+	// console.log("mouseY: " + mouseY);
+	// console.log("draggingElement.style.top: " + `${event.pageY - mouseY}px`);
 	draggingElement.style.top = `${event.pageY - mouseY}px`;
 
 	// moving up
@@ -106,7 +108,7 @@ function mouseMoveHandler(event) {
 			return;
 		}
 
-		swapNodes(draggingElementPlaceholder, draggingElement);
+		swapNodes(previousElement, draggingElement);
 		swapNodes(draggingElementPlaceholder, previousElement);
 	}
 
@@ -121,7 +123,7 @@ function mouseUpHandler(event) {
 	draggingInProgress = false;
 
 	// remove placeholder
-	if (draggingElementPlaceholder && draggingElement.parentNode) {
+	if (draggingElementPlaceholder && draggingElementPlaceholder.parentNode) {
 		draggingElementPlaceholder.parentNode.removeChild(draggingElementPlaceholder);
 	}
 
@@ -130,7 +132,6 @@ function mouseUpHandler(event) {
 	draggingElement.style.removeProperty("top");
 
 	// clear drag & drop variables
-	mouseX = null;
 	mouseY = null;
 	draggingElement = null;
 
@@ -139,7 +140,7 @@ function mouseUpHandler(event) {
 	document.removeEventListener("mouseup", mouseUpHandler);
 
 	// TODO list again in storage (if applicable) with the new order;
-	console.log(todoListItems);
+	// console.log(todoListItems);
 }
 
 function isAbove(nodeA, nodeB) {
