@@ -1,6 +1,7 @@
 const todoList = document.querySelector("#todo-list");
 const listInput = document.querySelector("#todo-list_input");
 
+// create new list item when "Enter" is pressed
 listInput.addEventListener("keydown", (event) => {
 	if (event.keyCode !== 13) {
 		return;
@@ -19,6 +20,15 @@ const todoListItems = [
 	"placeholder list item text 4",
 ];
 
+// drag & drop variables
+let draggingElement;
+let draggingElementPlaceholder;
+let draggingInProgress = false;
+let mouseX = null;
+let mouseY = null;
+
+// let previouslyDraggedOverItem;
+
 function createListItem(item) {
 	// create the list item container and h1 containing the todo text
 	const listItem = document.createElement("div");
@@ -30,11 +40,7 @@ function createListItem(item) {
 	listItem.appendChild(listItemText);
 
 	// drag and drop
-	// listItem.setAttribute("draggable", "true");
-	// listItem.addEventListener("drop", () => console.log("drop"));
-	// listItem.addEventListener("dragstart", () => console.log("dragstart"));
-	// listItem.addEventListener("drag", () => console.log("drag"));
-	// listItem.addEventListener("dragend", () => console.log("dragend"));
+	listItem.addEventListener("mousedown", mouseDownHandler);
 
 	// create the delete button and append it to the list item
 	const deleteButton = document.createElement("div");
@@ -50,7 +56,108 @@ function createListItem(item) {
 	todoList.appendChild(listItem);
 }
 
-// create list items for all current items
-for (const item of todoListItems) {
-	createListItem(item);
+function mouseDownHandler(event) {
+	draggingElement = event.target;
+	while (!draggingElement.classList.contains("todo-list_item")) {
+		draggingElement = draggingElement.parentNode;
+	}
+
+	// calculate mouse position
+	const rect = draggingElement.getBoundingClientRect();
+	mouseX = event.pageX - rect.left;
+	mouseY = event.pageY - rect.top;
+
+	// attach listeners to the document
+	document.addEventListener("mousemove", mouseMoveHandler);
+	document.addEventListener("mouseup", mouseUpHandler);
 }
+
+function mouseMoveHandler(event) {
+	const previousElement = draggingElement.previousElementSibling;
+	const nextElement = draggingElement.nextElementSibling;
+	const draggingRect = draggingElement.getBoundingClientRect();
+
+	if (!draggingInProgress) {
+		draggingInProgress = true;
+
+		// create placeholder
+		draggingElementPlaceholder = document.createElement("div");
+		draggingElementPlaceholder.classList.add("todo-list_item");
+		draggingElementPlaceholder.style.visibility = "hidden";
+		draggingElement.parentNode.insertBefore(draggingElementPlaceholder, draggingElement.nextSibling);
+		draggingElementPlaceholder.style.height = `${draggingRect.height}px`;
+	}
+
+	// set position styles for dragging element
+	draggingElement.style.position = "absolute";
+	draggingElement.style.top = `${event.pageY - mouseY}px`;
+
+	// moving up
+	if (previousElement && isAbove(draggingElement, previousElement)) {
+		// cancel if above element is the list input
+		if (previousElement.id === "todo-list_input") {
+			return;
+		}
+
+		swapNodes(draggingElementPlaceholder, draggingElement);
+		swapNodes(draggingElementPlaceholder, previousElement);
+	}
+
+	// moving down
+	if (nextElement && isAbove(nextElement, draggingElement)) {
+		swapNodes(nextElement, draggingElementPlaceholder);
+		swapNodes(nextElement, draggingElement);
+	}
+}
+
+function mouseUpHandler(event) {
+	draggingInProgress = false;
+
+	// remove placeholder
+	if (draggingElementPlaceholder && draggingElement.parentNode) {
+		draggingElementPlaceholder.parentNode.removeChild(draggingElementPlaceholder);
+	}
+
+	// remove position styles for dragging element
+	draggingElement.style.removeProperty("position");
+	draggingElement.style.removeProperty("top");
+
+	// clear drag & drop variables
+	mouseX = null;
+	mouseY = null;
+	draggingElement = null;
+
+	// remove mousemove and mouseup listeners
+	document.removeEventListener("mousemove", mouseMoveHandler);
+	document.removeEventListener("mouseup", mouseUpHandler);
+
+	// TODO list again in storage (if applicable) with the new order;
+	console.log(todoListItems);
+}
+
+function isAbove(nodeA, nodeB) {
+	const rectA = nodeA.getBoundingClientRect();
+	const rectB = nodeB.getBoundingClientRect();
+	return rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2;
+}
+
+function swapNodes(nodeA, nodeB) {
+	// console.log("nodeA: ", nodeA);
+	// console.log("nodeB: ", nodeB.querySelector(".todo-list_item_text").textContent);
+	const parentA = nodeA.parentNode;
+	const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
+
+	// move nodeA before nodeB
+	nodeB.parentNode.insertBefore(nodeA, nodeB);
+
+	// move nodeB before the sibling of nodeA
+	parentA.insertBefore(nodeB, siblingA);
+}
+
+function createAllListItems() {
+	for (const item of todoListItems) {
+		createListItem(item);
+	}
+}
+
+createAllListItems();

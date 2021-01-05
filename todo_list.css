@@ -39,6 +39,7 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	cursor: move;
 }
 
 .todo-list_item_text {
@@ -50,6 +51,7 @@ body {
 	background-color: white;
 	color: lightcoral;
 	padding: 1rem 1.5rem;
+	cursor: pointer;
 }
 
 .todo-list_item_delete-button:hover {
