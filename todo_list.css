@@ -22,7 +22,8 @@ body {
 	padding: 0.7rem;
 	border-width: 4px;
 	outline: none;
-	width: 100%;
+	width: 80vw;
+	max-width: 1200px;
 }
 
 ::placeholder {
@@ -40,6 +41,8 @@ body {
 	justify-content: space-between;
 	align-items: center;
 	cursor: move;
+	width: 80vw;
+	max-width: 1200px;
 }
 
 .todo-list_item_text {
