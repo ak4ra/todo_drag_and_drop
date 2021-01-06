@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"outDir": "./built",
+		"outDir": "./public/js",
 		"allowJs": false,
 		"target": "ES6"
 	},
