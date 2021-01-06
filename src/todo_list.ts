@@ -95,7 +95,6 @@ function mouseDownHandler(event: MouseEvent): void {
 function mouseMoveHandler(event: MouseEvent): void {
 	const previousElement = draggingElement.previousElementSibling;
 	const nextElement = draggingElement.nextElementSibling;
-	const draggingRect = draggingElement.getBoundingClientRect();
 
 	if (!draggingInProgress) {
 		draggingInProgress = true;
@@ -105,7 +104,7 @@ function mouseMoveHandler(event: MouseEvent): void {
 		draggingElementPlaceholder.classList.add("todo-list_item");
 		draggingElementPlaceholder.style.visibility = "hidden";
 		draggingElement.parentNode.insertBefore(draggingElementPlaceholder, draggingElement.nextSibling);
-		draggingElementPlaceholder.style.height = `${draggingRect.height}px`;
+		draggingElementPlaceholder.style.height = `${draggingElement.getBoundingClientRect().height}px`;
 	}
 
 	// set position styles for dragging element
