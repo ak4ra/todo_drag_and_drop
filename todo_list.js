@@ -155,7 +155,6 @@ function mouseUpHandler(event) {
 	// remove position styles for dragging element
 	draggingElement.style.removeProperty("position");
 	draggingElement.style.removeProperty("top");
-	draggingElement.style.removeProperty("bottom");
 	draggingElement.classList.remove("todo-list_item--dragging");
 
 	// clear drag & drop variables
