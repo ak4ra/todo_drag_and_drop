@@ -111,11 +111,9 @@ function mouseMoveHandler(event) {
 	draggingElement.style.position = "absolute";
 	const position = event.pageY - mouseY;
 	const topLimit = todoList.getBoundingClientRect().top + listInput.getBoundingClientRect().height / 1.01;
-	const bottomLimit = todoList.getBoundingClientRect().bottom - draggingElement.getBoundingClientRect().height;
+	const bottomLimit =
+		todoList.getBoundingClientRect().bottom - draggingElement.getBoundingClientRect().height + window.scrollY;
 	switch (true) {
-		case position > topLimit && position < bottomLimit:
-			draggingElement.style.top = `${position}px`;
-			break;
 		case position < topLimit:
 			draggingElement.style.top = `${topLimit}px`;
 			break;
@@ -126,7 +124,6 @@ function mouseMoveHandler(event) {
 			draggingElement.style.top = `${position}px`;
 			break;
 	}
-	// draggingElement.style.top = `${event.pageY - mouseY}px`;
 
 	// moving up
 	if (previousElement && isAbove(draggingElement, previousElement)) {
@@ -165,7 +162,7 @@ function mouseUpHandler(event) {
 	mouseY = null;
 	draggingElement = null;
 
-	// remove mousemove and mouseup listeners
+	// clear listeners
 	document.removeEventListener("mousemove", mouseMoveHandler);
 	document.removeEventListener("mouseup", mouseUpHandler);
 }
