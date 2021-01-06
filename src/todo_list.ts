@@ -1,19 +1,20 @@
 const storage = window.localStorage;
 const TODO_LIST_ITEMS = "todoListItems";
 
-const todoList = document.querySelector("#todo-list");
-const listInput = document.querySelector("#todo-list_input");
+const todoList: HTMLDivElement = document.querySelector("#todo-list");
+const listInput: HTMLInputElement = document.querySelector("#todo-list_input");
 
-const todoListItems = getTodoList() || [];
+const todoListItems: string[] = getTodoList() || [];
 saveTodoList();
 
 // create new list item when "Enter" is pressed
-listInput.addEventListener("keydown", (event) => {
-	if (event.keyCode !== 13) {
+listInput.addEventListener("keydown", (event: KeyboardEvent) => {
+	if (event.key !== "Enter") {
 		return;
 	}
-	const newItemText = event.target.value.trim();
-	event.target.value = "";
+	const target = <HTMLInputElement>event.target;
+	const newItemText = target.value.trim();
+	target.value = "";
 	if (!Boolean(newItemText)) {
 		return;
 	}
@@ -27,19 +28,19 @@ listInput.addEventListener("keydown", (event) => {
 });
 
 // drag & drop variables
-let draggingElement;
-let draggingElementPlaceholder;
+let draggingElement: HTMLDivElement;
+let draggingElementPlaceholder: HTMLDivElement;
 let draggingInProgress = false;
-let mouseDistanceFromDraggingElementTop = null;
+let mouseDistanceFromDraggingElementTop: number = null;
 
-function createListItem(item, i) {
+function createListItem(itemText: string, i: number): void {
 	// create the list item container and h1 containing the todo text
 	const listItem = document.createElement("div");
 	listItem.id = `item_${i}`;
 	listItem.classList.add("todo-list_item");
 	const listItemText = document.createElement("h1");
 	listItemText.classList.add("todo-list_item_text");
-	const listItemTextNode = document.createTextNode(item);
+	const listItemTextNode = document.createTextNode(itemText);
 	listItemText.appendChild(listItemTextNode);
 	listItem.appendChild(listItemText);
 
@@ -52,7 +53,7 @@ function createListItem(item, i) {
 	const deleteButtonText = document.createElement("h1");
 	const deleteTextNode = document.createTextNode("\u2A2F");
 	deleteButtonText.appendChild(deleteTextNode);
-	deleteButton.addEventListener("click", () => deleteListItem(listItem, item));
+	deleteButton.addEventListener("click", () => deleteListItem(listItem, itemText));
 	deleteButton.appendChild(deleteButtonText);
 	listItem.appendChild(deleteButton);
 
@@ -60,7 +61,7 @@ function createListItem(item, i) {
 	todoList.appendChild(listItem);
 }
 
-function deleteListItem(listItem, listItemText) {
+function deleteListItem(listItem: HTMLDivElement, listItemText: string): void {
 	const index = todoListItems.findIndex((td) => td === listItemText);
 	if (index === -1) {
 		return;
@@ -70,15 +71,15 @@ function deleteListItem(listItem, listItemText) {
 	saveTodoList();
 }
 
-function mouseDownHandler(event) {
-	draggingElement = event.target;
+function mouseDownHandler(event: MouseEvent): void {
+	draggingElement = <HTMLDivElement>event.target;
 	// return if the event comes from the delete button
 	// move up until todo-list_item is selected, if the event comes from a child
 	if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
 	while (!draggingElement.classList.contains("todo-list_item")) {
 		// return if the event comes from the delete button
 		if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
-		draggingElement = draggingElement.parentNode;
+		draggingElement = <HTMLDivElement>draggingElement.parentNode;
 	}
 
 	draggingElement.classList.add("todo-list_item--dragging");
@@ -91,7 +92,7 @@ function mouseDownHandler(event) {
 	document.addEventListener("mouseup", mouseUpHandler);
 }
 
-function mouseMoveHandler(event) {
+function mouseMoveHandler(event: MouseEvent): void {
 	const previousElement = draggingElement.previousElementSibling;
 	const nextElement = draggingElement.nextElementSibling;
 	const draggingRect = draggingElement.getBoundingClientRect();
@@ -144,7 +145,7 @@ function mouseMoveHandler(event) {
 	}
 }
 
-function mouseUpHandler(event) {
+function mouseUpHandler(): void {
 	draggingInProgress = false;
 
 	// remove placeholder
@@ -166,7 +167,7 @@ function mouseUpHandler(event) {
 	document.removeEventListener("mouseup", mouseUpHandler);
 }
 
-function swapItemsInList(nodeA, nodeB) {
+function swapItemsInList(nodeA: ParentNode, nodeB: ParentNode): void {
 	const textA = nodeA.querySelector("h1") ? nodeA.querySelector("h1").textContent : "";
 	const textB = nodeB.querySelector("h1") ? nodeB.querySelector("h1").textContent : "";
 
@@ -186,16 +187,14 @@ function swapItemsInList(nodeA, nodeB) {
 	saveTodoList();
 }
 
-function getTodoList() {
+function getTodoList(): string[] {
 	return JSON.parse(storage.getItem(TODO_LIST_ITEMS));
 }
 
-function saveTodoList() {
+function saveTodoList(): void {
 	storage.setItem(TODO_LIST_ITEMS, JSON.stringify(todoListItems));
 }
 
-function createAllListItems() {
+(function createAllListItems(): void {
 	todoListItems.forEach((item, i) => createListItem(item, i));
-}
-
-createAllListItems();
+})();
