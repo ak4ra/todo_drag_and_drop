@@ -168,9 +168,7 @@ function mouseUpHandler(event) {
 }
 
 function isAbove(nodeA, nodeB) {
-	const rectA = nodeA.getBoundingClientRect();
-	const rectB = nodeB.getBoundingClientRect();
-	return rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2;
+	return nodeA.getBoundingClientRect().top < nodeB.getBoundingClientRect().top;
 }
 
 function swapNodes(nodeA, nodeB) {
