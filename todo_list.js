@@ -71,7 +71,6 @@ function deleteListItem(listItem, listItemText) {
 }
 
 function mouseDownHandler(event) {
-
 	draggingElement = event.target;
 	// return if the event comes from the delete button
 	if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
@@ -110,7 +109,24 @@ function mouseMoveHandler(event) {
 
 	// set position styles for dragging element
 	draggingElement.style.position = "absolute";
-	draggingElement.style.top = `${event.pageY - mouseY}px`;
+	const position = event.pageY - mouseY;
+	const topLimit = todoList.getBoundingClientRect().top + listInput.getBoundingClientRect().height / 1.01;
+	const bottomLimit = todoList.getBoundingClientRect().bottom - draggingElement.getBoundingClientRect().height;
+	switch (true) {
+		case position > topLimit && position < bottomLimit:
+			draggingElement.style.top = `${position}px`;
+			break;
+		case position < topLimit:
+			draggingElement.style.top = `${topLimit}px`;
+			break;
+		case position > bottomLimit:
+			draggingElement.style.top = `${bottomLimit}px`;
+			break;
+		default:
+			draggingElement.style.top = `${position}px`;
+			break;
+	}
+	// draggingElement.style.top = `${event.pageY - mouseY}px`;
 
 	// moving up
 	if (previousElement && isAbove(draggingElement, previousElement)) {
@@ -118,7 +134,6 @@ function mouseMoveHandler(event) {
 		if (previousElement.id === "todo-list_input") {
 			return;
 		}
-
 		swapNodes(previousElement, draggingElement);
 		swapNodes(draggingElementPlaceholder, previousElement);
 		swapItemsInList(previousElement, draggingElement);
@@ -143,6 +158,7 @@ function mouseUpHandler(event) {
 	// remove position styles for dragging element
 	draggingElement.style.removeProperty("position");
 	draggingElement.style.removeProperty("top");
+	draggingElement.style.removeProperty("bottom");
 	draggingElement.classList.remove("todo-list_item--dragging");
 
 	// clear drag & drop variables
