@@ -73,6 +73,7 @@ function deleteListItem(listItem, listItemText) {
 function mouseDownHandler(event) {
 	draggingElement = event.target;
 	// return if the event comes from the delete button
+	// move up until todo-list_item is selected, if the event comes from a child
 	if (draggingElement.classList.contains("todo-list_item_delete-button")) return;
 	while (!draggingElement.classList.contains("todo-list_item")) {
 		// return if the event comes from the delete button
@@ -126,20 +127,20 @@ function mouseMoveHandler(event) {
 	}
 
 	// moving up
-	if (previousElement && isAbove(draggingElement, previousElement)) {
+	if (previousElement && draggingElement.getBoundingClientRect().top < previousElement.getBoundingClientRect().top) {
 		// cancel if above element is the list input
 		if (previousElement.id === "todo-list_input") {
 			return;
 		}
-		swapNodes(previousElement, draggingElement);
-		swapNodes(draggingElementPlaceholder, previousElement);
+		previousElement.parentNode.insertBefore(draggingElementPlaceholder, previousElement);
+		previousElement.parentNode.insertBefore(draggingElement, previousElement);
 		swapItemsInList(previousElement, draggingElement);
 	}
 
 	// moving down
-	if (nextElement && isAbove(nextElement, draggingElement)) {
-		swapNodes(nextElement, draggingElementPlaceholder);
-		swapNodes(nextElement, draggingElement);
+	if (nextElement && nextElement.getBoundingClientRect().top < draggingElement.getBoundingClientRect().top) {
+		nextElement.parentNode.insertBefore(nextElement, draggingElementPlaceholder);
+		nextElement.parentNode.insertBefore(draggingElement, nextElement.nextSibling);
 		swapItemsInList(draggingElement, nextElement);
 	}
 }
@@ -164,21 +165,6 @@ function mouseUpHandler(event) {
 	// clear listeners
 	document.removeEventListener("mousemove", mouseMoveHandler);
 	document.removeEventListener("mouseup", mouseUpHandler);
-}
-
-function isAbove(nodeA, nodeB) {
-	return nodeA.getBoundingClientRect().top < nodeB.getBoundingClientRect().top;
-}
-
-function swapNodes(nodeA, nodeB) {
-	const parentA = nodeA.parentNode;
-	const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
-
-	// move nodeA before nodeB
-	nodeB.parentNode.insertBefore(nodeA, nodeB);
-
-	// move nodeB before the sibling of nodeA
-	parentA.insertBefore(nodeB, siblingA);
 }
 
 function swapItemsInList(nodeA, nodeB) {
