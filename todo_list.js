@@ -30,7 +30,7 @@ listInput.addEventListener("keydown", (event) => {
 let draggingElement;
 let draggingElementPlaceholder;
 let draggingInProgress = false;
-let mouseY = null;
+let mouseDistanceFromDraggingElementTop = null;
 
 function createListItem(item, i) {
 	// create the list item container and h1 containing the todo text
@@ -83,9 +83,8 @@ function mouseDownHandler(event) {
 
 	draggingElement.classList.add("todo-list_item--dragging");
 
-	// calculate mouse position
 	const elementDistanceFromPageTop = draggingElement.getBoundingClientRect().top + window.scrollY;
-	mouseY = event.pageY - elementDistanceFromPageTop;
+	mouseDistanceFromDraggingElementTop = event.pageY - elementDistanceFromPageTop;
 
 	// attach listeners to the document
 	document.addEventListener("mousemove", mouseMoveHandler);
@@ -110,7 +109,7 @@ function mouseMoveHandler(event) {
 
 	// set position styles for dragging element
 	draggingElement.style.position = "absolute";
-	const position = event.pageY - mouseY;
+	const position = event.pageY - mouseDistanceFromDraggingElementTop; // current potential position of element top
 	const topLimit = todoList.getBoundingClientRect().top + listInput.getBoundingClientRect().height / 1.01;
 	const bottomLimit =
 		todoList.getBoundingClientRect().bottom - draggingElement.getBoundingClientRect().height + window.scrollY;
@@ -159,7 +158,7 @@ function mouseUpHandler(event) {
 	draggingElement.classList.remove("todo-list_item--dragging");
 
 	// clear drag & drop variables
-	mouseY = null;
+	mouseDistanceFromDraggingElementTop = null;
 	draggingElement = null;
 
 	// clear listeners
