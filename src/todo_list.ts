@@ -181,8 +181,7 @@ function swapItemsInList(nodeA: ParentNode, nodeB: ParentNode): void {
 	if (indexA !== indexB - 1) {
 		return;
 	}
-	todoListItems.splice(indexA, 1, textB);
-	todoListItems.splice(indexB, 1, textA);
+	todoListItems.splice(indexA, 2, textB, textA);
 	saveTodoList();
 }
 
