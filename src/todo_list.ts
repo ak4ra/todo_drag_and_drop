@@ -22,7 +22,6 @@ listInput.addEventListener("keydown", (event: KeyboardEvent) => {
 	if (todoListItems.findIndex((td) => td === newItemText) > -1) {
 		return;
 	}
-	todoListItems.push(newItemText);
 	createListItem(newItemText, todoListItems.length - 1);
 	saveTodoList();
 });
@@ -57,8 +56,13 @@ function createListItem(itemText: string, i: number): void {
 	deleteButton.appendChild(deleteButtonText);
 	listItem.appendChild(deleteButton);
 
-	// add the list item to the todo list
-	todoList.appendChild(listItem);
+	// add the list item to end the todo list
+	// todoListItems.push(itemText);
+	// todoList.appendChild(listItem);
+
+	// add the list item to the beginning of the todo list
+	todoListItems.unshift(itemText);
+	todoList.insertBefore(listItem, todoList.firstElementChild.nextElementSibling);
 }
 
 function deleteListItem(listItem: HTMLDivElement, listItemText: string): void {
@@ -194,5 +198,7 @@ function saveTodoList(): void {
 }
 
 (function createAllListItems(): void {
-	todoListItems.forEach((item, i) => createListItem(item, i));
+	// Empty recreate the list
+	const todoListItemsCopy = todoListItems.splice(0, todoListItems.length);
+	todoListItemsCopy.reverse().forEach((item, i) => createListItem(item, i));
 })();
